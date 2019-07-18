@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -10,7 +9,9 @@
 
 <body>
   <div class="content">
-    {"message": "Sampurasun mbah"}
+    <?php
+    echo '{"message": "Sampurasun mbah"}';
+    ?>
   </div>
 </body>
 
