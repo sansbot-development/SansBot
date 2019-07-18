@@ -59,6 +59,7 @@ export default (client: Client, message: Message) => {
 
   // Execute command
   try {
+    // Make sure this command is execute in another core
     Threadify.runner((_stream) => {
       // If commandFile is null, return
       if (!commandFile) return;
@@ -67,6 +68,18 @@ export default (client: Client, message: Message) => {
       if (commandFile.config.direct_message == false && !message.guild) {
         return message.reply('You can not using this command in Direct Message!');
       }
+
+      // If command is strict
+      let strict: boolean = false;
+      client.helps.forEach((help) => {
+        // If command include in help
+        // and if strict array include server id
+        // and if strict array length more than 0
+        if (help.cmds.includes(commandFile!.help.name) && !help.strict.includes(message.guild.id) && help.strict.length > 0)
+          strict = true;
+      });
+      if (strict)
+        return message.reply('You can not using this command in this server!');
 
       // Execute
       try {

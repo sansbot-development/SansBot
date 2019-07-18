@@ -1,7 +1,7 @@
 {
-  "bot_name": "discord-template",
-  "bot_prefix": "dt.",
-  "bot_dev_prefix": "dt.",
+  "bot_name": "SansBot",
+  "bot_prefix": "sb.",
+  "bot_dev_prefix": "sbd.",
   "embed_color": "0xf48042",
   "owners_id": [
     "379616881272946688"

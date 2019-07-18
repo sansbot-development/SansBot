@@ -1,5 +1,5 @@
 {
   "name": "Owner Only",
-  "hide": true,
-  "strict": []
+  "hide": false,
+  "strict": ["454637408479084566"]
 }
