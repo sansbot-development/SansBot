@@ -16,9 +16,6 @@ export default (client: Client, message: Message) => {
   let msg = message.content.toLowerCase();
   let commandFile = client.commands.get(cmd) || client.commands.get(<any>client.aliases.get(cmd));
 
-  // Fix prefix override
-  if (!message.content.startsWith(prefix)) return;
-
   // If deveelopment
   if (process.env.DEV === 'dev') {
     if (message.content.startsWith(prefix) && !client.config.owners_id.includes(message.author.id)) {
@@ -30,6 +27,9 @@ export default (client: Client, message: Message) => {
   if (msg === `<@${client.user.id}>` || msg === `<@!${client.user.id}>`) {
     return message.channel.send(`:wave: | Hello <@${message.author.id}>, this bot prefix is \`${prefix}\``);
   }
+
+  // Fix prefix override
+  if (!message.content.startsWith(prefix)) return;
 
   // BEGIN COOLDOWN //
   let cooldown = new Collection<string, any>();
