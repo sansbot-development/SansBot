@@ -1,8 +1,6 @@
 import { Client, Message, CommandComponent, TextChannel } from '@type/Bot';
-import { RichEmbed, Collection } from 'discord.js';
+import { RichEmbed, Collection, GuildChannel } from 'discord.js';
 
-const AnnouncementChannel: string = '336877836680036352';
-const NotRevision: string = 'Belum direvisi.';
 type TArgsCollection = 'MENTION' | 'ROLE' | 'TEXT';
 interface IRole {
   role_id: string;
@@ -108,6 +106,17 @@ export default class AnnounceAdd implements CommandComponent {
     })
   }
 
+  private captcha = (): string => {
+    let randCharacter = 'QWERTYUIOPASDFGHJKLZXCVBNM';
+    let arrCharacter = randCharacter.split('');
+    let ret = '';
+    for (let i = 0; i < 5; i++) {
+      let randNumber = Math.floor(Math.random() * arrCharacter.length);
+      ret += arrCharacter[randNumber];
+    }
+    return ret;
+  }
+
   async run(client: Client, message: Message, args: string[]) {
     let member = message.member;
     let embed = new RichEmbed()
@@ -124,6 +133,62 @@ export default class AnnounceAdd implements CommandComponent {
       return message.reply(client.constant.usage(client.prefix, this.help.usage));
     }
 
-    console.log(await this.checkArgs(args, message));
+    let capcay = this.captcha();
+    let rules = (msg: Message) => msg.content.toUpperCase() === capcay
+      && msg.author.id === message.author.id;
+
+    message.channel.send('Apakah anda yakin ingin mengirim pengumuman tersebut.\n' +
+      `Balas pesan ini dengan kode berikut: \`${capcay}\``)
+      .then((_msg: any) => {
+        let msg: Message = _msg;
+        message.channel.awaitMessages(rules, { max: 1, time: 300000, errors: ['time'] })
+          .then(async (collected) => {
+            let collectionArg = await this.checkArgs(args, message);
+            let messageSend: string = '';
+            // console.log(collectionArg);
+
+            // <@&id> -> Role
+            // <@!id> -> ID
+            let _roleGet: any = collectionArg.get('ROLE');
+            if (_roleGet) {
+              let roleGet: IRole[] = _roleGet;
+              roleGet.forEach((role) => {
+                messageSend += role.type === 'MEMBER'
+                  ? `<@!${role.role_id}> `
+                  : `<@&${role.role_id}> `
+              });
+            }
+
+            // If has mention
+            let _mentionGet: any = collectionArg.get('MENTION');
+            if (_mentionGet) {
+              let mentionGet: IMention = _mentionGet;
+              if (mentionGet.everyone) {
+                messageSend += '@everyone ';
+              }
+              if (mentionGet.here) {
+                messageSend += '@here ';
+              }
+            }
+            // console.log(messageSend);
+
+            // Text here
+            let textGet: any = collectionArg.get('TEXT');
+            embed
+              .setFooter(client.constant.announcer.before_revision)
+              .setDescription(textGet);
+
+            let _gilda: any = message.guild.channels.get(client.constant.announcer.channel);
+            if (!_gilda) return message.reply(client.constant.errorReport('WRONG_ANNOUNCER_ID'));
+
+            let gilda: TextChannel = _gilda;
+            await gilda.send(messageSend, { embed: embed });
+            await message.reply(`pesan terkirim! Cek di <#${client.constant.announcer.channel}>`);
+          })
+          .catch((err) => {
+            message.reply('waktu habis!');
+            msg.delete();
+          });
+      });
   }
 }
