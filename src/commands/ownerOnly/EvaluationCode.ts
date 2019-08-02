@@ -35,7 +35,15 @@ export default class EvaluationCode implements CommandComponent {
 
       // Try the code
       try {
-        let __eval__ = eval(newScript);
+        let __eval__: any;
+
+        // If TOKEN is available
+        if (newScript.match(/TOKEN/g)) {
+          __eval__ = 'ERROR: KONTOL LO'
+        }
+        else {
+          __eval__ = eval(newScript);
+        }
 
         if (typeof __eval__ !== 'string')
           __eval__ = util.inspect(__eval__, { depth: 0 });
