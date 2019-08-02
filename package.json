@@ -30,7 +30,6 @@
     "express": "^4.16.4",
     "moment": "^2.24.0",
     "string-template": "^1.0.0",
-    "synchronous-ify": "github:jDevxyz/synchronous-ify",
     "timer-machine": "^1.1.0",
     "ts-node": "^8.1.0"
   }

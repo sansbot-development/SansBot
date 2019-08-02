@@ -7,7 +7,6 @@ import { Client, Message, ModuleCommand, CommandComponent } from '@type/Bot';
 import { Collection } from 'discord.js';
 import log from '../../../console';
 import strTemplate from 'string-template';
-import { Threadify } from 'synchronous-ify';
 
 export default (client: Client, message: Message) => {
   let prefix = client.prefix;
@@ -59,35 +58,32 @@ export default (client: Client, message: Message) => {
 
   // Execute command
   try {
-    // Make sure this command is execute in another core
-    Threadify.runner((_stream) => {
-      // If commandFile is null, return
-      if (!commandFile) return;
+    // If commandFile is null, return
+    if (!commandFile) return;
 
-      // If direct_message is false
-      if (commandFile.config.direct_message == false && !message.guild) {
-        return message.reply('You can not using this command in Direct Message!');
-      }
+    // If direct_message is false
+    if (commandFile.config.direct_message == false && !message.guild) {
+      return message.reply('You can not using this command in Direct Message!');
+    }
 
-      // If command is strict
-      let strict: boolean = false;
-      client.helps.forEach((help) => {
-        // If command include in help
-        // and if strict array include server id
-        // and if strict array length more than 0
-        if (help.cmds.includes(commandFile!.help.name) && !help.strict.includes(message.guild.id) && help.strict.length > 0)
-          strict = true;
-      });
-      if (strict)
-        return message.reply('You can not using this command in this server!');
-
-      // Execute
-      try {
-        commandFile.run(client, message, args.splice(1));
-      } catch (error) {
-        log.error('MESSAGE', error);
-      }
+    // If command is strict
+    let strict: boolean = false;
+    client.helps.forEach((help) => {
+      // If command include in help
+      // and if strict array include server id
+      // and if strict array length more than 0
+      if (help.cmds.includes(commandFile!.help.name) && !help.strict.includes(message.guild.id) && help.strict.length > 0)
+        strict = true;
     });
+    if (strict)
+      return message.reply('You can not using this command in this server!');
+
+    // Execute
+    try {
+      commandFile.run(client, message, args.splice(1));
+    } catch (error) {
+      log.error('MESSAGE', error);
+    }
   }
   catch (error) {
     log.error('MESSAGE', error);
