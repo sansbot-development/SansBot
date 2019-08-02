@@ -175,7 +175,7 @@ export default class AnnounceAdd implements CommandComponent {
             // Text here
             let textGet: any = collectionArg.get('TEXT');
             embed
-              .setFooter(client.constant.announcer.before_revision)
+              .setFooter(`${client.constant.announcer.before_revision} | ${message.author.id}`)
               .setDescription(textGet);
 
             let _gilda: any = message.guild.channels.get(client.constant.announcer.channel);
@@ -183,6 +183,14 @@ export default class AnnounceAdd implements CommandComponent {
 
             let gilda: TextChannel = _gilda;
             await gilda.send(messageSend, { embed: embed });
+
+            // Delete all the message
+            await msg.delete();
+            collected.forEach(col => {
+              col.delete();
+            });
+            message.delete();
+
             await message.reply(`pesan terkirim! Cek di <#${client.constant.announcer.channel}>`);
           })
           .catch((err) => {

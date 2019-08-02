@@ -10,7 +10,7 @@ export default class Constant {
   }
 
   public announcer = {
-    channel: '401532703301828610',
+    channel: <string>process.env.POS_ANNOUNCE_CHANNEL,
     before_revision: 'Belum direvisi.',
     after_revision: (count: number): string => {
       return `Telah diubah sebanyak ${count} kali.`;
