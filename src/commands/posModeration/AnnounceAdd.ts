@@ -175,7 +175,7 @@ export default class AnnounceAdd implements CommandComponent {
             // Text here
             let textGet: any = collectionArg.get('TEXT');
             embed
-              .setFooter(`${client.constant.announcer.before_revision} | ${message.author.id}`)
+              .setFooter(`${client.constant.announcer.before_revision} | ${message.author.id}`, client.user.displayAvatarURL)
               .setDescription(textGet);
 
             let _gilda: any = message.guild.channels.get(client.constant.announcer.channel);

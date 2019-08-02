@@ -102,7 +102,7 @@ export default class AnnounceEdit implements CommandComponent {
         // RENAME IT!
         embed
           .setDescription(messCollect)
-          .setFooter(`${postedFooter} | ${message.author.id}`);
+          .setFooter(`${postedFooter} | ${message.author.id}`, client.user.displayAvatarURL);
         msgEdit.edit(msgEdit.content, { embed: embed });
 
         // Delete all the message
