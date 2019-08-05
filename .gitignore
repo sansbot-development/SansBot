@@ -1,4 +1,4 @@
 node_modules
 .env
 
-./src/assets/db/*.json
+/src/assets/db/*.json
